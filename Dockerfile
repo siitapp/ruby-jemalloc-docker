@@ -1,5 +1,5 @@
 ARG RUBY_VERSION="3.4.1"
-ARG IMAGE_NAME="ruby:${RUBY_VERSION}-slim"
+ARG IMAGE_NAME="ruby:${RUBY_VERSION}-slim-bullseye"
 # hadolint ignore=DL3006
 FROM ${IMAGE_NAME}
 
