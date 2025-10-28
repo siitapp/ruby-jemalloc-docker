@@ -19,13 +19,10 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Extract branch name
+      - name: Extract tag name
         shell: bash
-        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/} | sed 's#/#_#g')"
+        run: echo "##[set-output name=tag;]$(echo ${GITHUB_REF#refs/tags/} | sed 's#/#_#g')"
         id: extract_refs
-
-      - name: Debug branch name
-        run: echo "${{ steps.extract_refs.outputs.branch }}"
 
       - name: Cache Docker layers
         uses: actions/cache@v4
@@ -39,12 +36,12 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          tags: ${{ vars.ECS_REPOSITORY_NAME }}:${{ github.ref }}
+          tags: ${{ vars.ECS_REPOSITORY_NAME }}:${{ steps.extract_refs.outputs.tag }}
           load: true
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
           build_args: |
-            RUBY_VERSION=${{ github.ref }}
+            RUBY_VERSION=${{ steps.extract_refs.outputs.tag }}
 
       - name: Push Image to Amazon ECR
         id: ecr_sha_ruby
@@ -54,7 +51,7 @@ jobs:
           secret-access-key: ${{ secrets.GH_AWS_SECRET_ACCESS_KEY }}
           region: eu-west-1
           local-image: ${{ vars.ECS_REPOSITORY_NAME }}:${{ github.ref }}
-          image: ${{ vars.ECS_REPOSITORY_NAME }}:${{ github.ref }}, ${{ vars.ECS_REPOSITORY_NAME }}:${{ steps.extract_refs.outputs.branch }}
+          image: ${{ vars.ECS_REPOSITORY_NAME }}:${{ steps.extract_refs.outputs.tag }}
 
       -
         # Temp fix
