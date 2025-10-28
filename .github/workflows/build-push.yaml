@@ -50,7 +50,7 @@ jobs:
           access-key-id: ${{ vars.GH_AWS_ACCESS_KEY_ID }}
           secret-access-key: ${{ secrets.GH_AWS_SECRET_ACCESS_KEY }}
           region: eu-west-1
-          local-image: ${{ vars.ECS_REPOSITORY_NAME }}:${{ github.ref }}
+          local-image: ${{ vars.ECS_REPOSITORY_NAME }}:${{ steps.extract_refs.outputs.tag }}
           image: ${{ vars.ECS_REPOSITORY_NAME }}:${{ steps.extract_refs.outputs.tag }}
 
       -
