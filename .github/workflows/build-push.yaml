@@ -32,6 +32,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-buildx-
 
+      - name: Login to Amazon ECR Public
+        id: login-ecr-public
+        uses: aws-actions/amazon-ecr-login@v2
+        with:
+          registry-type: public
+
       - name: Build Image
         uses: docker/build-push-action@v5
         with:
@@ -40,8 +46,17 @@ jobs:
           load: true
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
-          build_args: |
+          build-args: |
             RUBY_VERSION=${{ steps.extract_refs.outputs.tag }}
+
+      - name: Build & Push Image
+        uses: docker/build-push-action@v6
+        with:
+          load: true
+          push: true
+          tags: ${{ steps.login-ecr-public.outputs.registry }}/${{ vars.ECS_REGISTRY_ALIAS }}/${{ vars.ECS_REPOSITORY_NAME }}:${{ steps.extract_refs.outputs.tag }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new
 
       - name: Push Image to Amazon ECR
         id: ecr_sha_ruby
