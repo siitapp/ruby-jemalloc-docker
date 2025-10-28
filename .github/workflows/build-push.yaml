@@ -45,17 +45,6 @@ jobs:
         with:
           registry-type: public
 
-      - name: Build Image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          tags: ${{ vars.ECS_REPOSITORY_NAME }}:${{ steps.extract_refs.outputs.tag }}
-          load: true
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new
-          build-args: |
-            RUBY_VERSION=${{ steps.extract_refs.outputs.tag }}
-
       - name: Build & Push Image
         uses: docker/build-push-action@v6
         with:
@@ -64,16 +53,6 @@ jobs:
           tags: ${{ steps.login-ecr-public.outputs.registry }}/${{ vars.ECS_REGISTRY_ALIAS }}/${{ vars.ECS_REPOSITORY_NAME }}:${{ steps.extract_refs.outputs.tag }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
-
-      - name: Push Image to Amazon ECR
-        id: ecr_sha_ruby
-        uses: jwalton/gh-ecr-push@v2
-        with:
-          access-key-id: ${{ vars.GH_AWS_ACCESS_KEY_ID }}
-          secret-access-key: ${{ secrets.GH_AWS_SECRET_ACCESS_KEY }}
-          region: eu-west-1
-          local-image: ${{ vars.ECS_REPOSITORY_NAME }}:${{ steps.extract_refs.outputs.tag }}
-          image: ${{ vars.ECS_REPOSITORY_NAME }}:${{ steps.extract_refs.outputs.tag }}
 
       -
         # Temp fix
