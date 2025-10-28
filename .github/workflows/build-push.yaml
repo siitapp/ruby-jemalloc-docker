@@ -53,9 +53,7 @@ jobs:
         with:
           load: true
           push: true
-          platforms:
-            - "linux/amd64"
-            - "linux/arm64"
+          platforms: "linux/amd64,linux/arm64"
           tags: ${{ steps.login-ecr-public.outputs.registry }}/${{ vars.ECS_REGISTRY_ALIAS }}/${{ vars.ECS_REPOSITORY_NAME }}:${{ steps.extract_refs.outputs.tag }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
