@@ -45,11 +45,17 @@ jobs:
         with:
           registry-type: public
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Build & Push Image
         uses: docker/build-push-action@v6
         with:
           load: true
           push: true
+          platform:
+            - linux/amd64
+            - linux/arm64
           tags: ${{ steps.login-ecr-public.outputs.registry }}/${{ vars.ECS_REGISTRY_ALIAS }}/${{ vars.ECS_REPOSITORY_NAME }}:${{ steps.extract_refs.outputs.tag }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
