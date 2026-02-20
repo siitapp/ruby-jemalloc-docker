@@ -1,5 +1,5 @@
-ARG RUBY_VERSION="3.4.1"
-ARG IMAGE_NAME="ruby:${RUBY_VERSION}-slim-bullseye"
+ARG RUBY_VERSION="3.4.8"
+ARG IMAGE_NAME="ruby:${RUBY_VERSION}-slim-trixie"
 # hadolint ignore=DL3006
 FROM ${IMAGE_NAME}
 
@@ -7,7 +7,7 @@ LABEL maintainer="Moritz Heiber <hello@heiber.im>"
 LABEL org.opencontainers.image.source=https://github.com/moritzheiber/ruby-jemalloc-docker
 
 ARG RUBY_VERSION
-ARG RUBY_CHECKSUM="3d385e5d22d368b064c817a13ed8e3cc3f71a7705d7ed1bae78013c33aa7c87f"
+ARG RUBY_CHECKSUM="53c4ddad41fbb6189f1f5ee0db57a51d54bd1f87f8755b3d68604156a35b045b"
 ARG ADDITIONAL_FLAGS
 
 ENV DEBIAN_FRONTEND="noninteractive" \
